@@ -30,6 +30,11 @@ export function ThemesDialog({ onClose, ...windowProps }: ThemesDialogProps) {
   const [sampleId, setSampleId] = useState<string>(SAMPLES_BY_TYPE.song[0].id)
   const [slideIndex, setSlideIndex] = useState(0)
   const [addingSlot, setAddingSlot] = useState(false)
+  // Opens at 70% of the app window; the editor needs room for the preview.
+  const [initialSize] = useState(() => ({
+    w: Math.round(window.innerWidth * 0.7),
+    h: Math.round(window.innerHeight * 0.7),
+  }))
   const idCounter = useRef(0)
   const nextId = (prefix: string) => `${prefix}-${++idCounter.current}`
 
@@ -122,14 +127,14 @@ export function ThemesDialog({ onClose, ...windowProps }: ThemesDialogProps) {
     <DialogShell
       title="Themes"
       titleId="themes-dialog-title"
-      initialWidth={1240}
-      initialHeight={760}
+      initialWidth={initialSize.w}
+      initialHeight={initialSize.h}
       minWidth={960}
       minHeight={600}
       onClose={onClose}
       {...windowProps}
     >
-      <div className="grid flex-1 grid-cols-[220px_1fr_300px] overflow-hidden">
+      <div className="grid flex-1 grid-cols-[220px_1fr_340px] overflow-hidden">
         {/* Themes list */}
         <div className="flex flex-col overflow-y-auto border-r border-white/8 p-2">
           {TYPES.map((type) => (
@@ -245,7 +250,7 @@ export function ThemesDialog({ onClose, ...windowProps }: ThemesDialogProps) {
             />
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-3">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
             <div className="flex items-center gap-2">
               <span className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
                 Sample
@@ -355,7 +360,7 @@ export function ThemesDialog({ onClose, ...windowProps }: ThemesDialogProps) {
         </div>
 
         {/* Inspector */}
-        <div className="flex flex-col overflow-y-auto border-l border-white/8">
+        <div className="flex flex-col overflow-x-hidden overflow-y-auto border-l border-white/8">
           {slot ? (
             <SlotInspector
               slot={slot}
