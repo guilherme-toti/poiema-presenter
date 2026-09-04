@@ -7,6 +7,8 @@
     "core:event:default",
     "sql:default",
     "sql:allow-select",
-    "sql:allow-execute"
+    "sql:allow-execute",
+    "updater:default",
+    "process:default"
   ]
 }
