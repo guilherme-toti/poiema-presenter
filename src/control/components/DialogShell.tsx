@@ -136,10 +136,14 @@ export function DialogShell({
     window.addEventListener('pointerup', onUp)
   }
 
+  // Min size is also applied as CSS so a content-sized window never opens
+  // smaller than the minimum (which would make the first resize jump).
   const style = {
     zIndex,
     width: size?.w ?? initialWidth,
     height: size?.h ?? initialHeight,
+    minWidth,
+    minHeight,
     ...(pos
       ? { left: pos.x, top: pos.y }
       : { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }),
