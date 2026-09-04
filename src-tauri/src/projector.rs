@@ -21,7 +21,7 @@ pub async fn open_projector(app: AppHandle, monitor_name: Option<String>) -> Res
     .or_else(|| {
       monitors
         .iter()
-        .find(|m| primary.as_ref().map_or(false, |p| p.position() != m.position()))
+        .find(|m| primary.as_ref().is_some_and(|p| p.position() != m.position()))
         .cloned()
     });
 
