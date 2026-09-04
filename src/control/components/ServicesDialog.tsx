@@ -40,7 +40,7 @@ export function ServicesDialog({
           <div className="mb-3 flex items-center justify-between">
             <button
               type="button"
-              className="flex items-center gap-2 rounded-md border border-indigo-400/60 px-3 py-2 text-sm font-medium text-neutral-100 hover:bg-indigo-500/10"
+              className="flex items-center gap-2 rounded-md border border-white/15 px-3 py-2 text-sm font-medium text-neutral-200 hover:border-white/25 hover:bg-white/5"
             >
               <Plus className="h-4 w-4" />
               New service

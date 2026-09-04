@@ -70,17 +70,26 @@ export function MediaDialog({ media, timeline, onAdd, onClose, ...windowProps }:
     >
       <div className="flex flex-1 overflow-hidden">
         <div className="flex w-[640px] min-w-[320px] flex-1 flex-col overflow-hidden p-3">
-          <label className="mb-3 flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm text-neutral-300 focus-within:border-indigo-400/60">
-            <Search className="h-4 w-4 shrink-0 text-neutral-500" />
-            <input
-              autoFocus
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search media"
-              className="flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none [&::-webkit-search-cancel-button]:appearance-none"
-            />
-          </label>
+          <div className="mb-3 flex items-center gap-2">
+            <label className="flex flex-1 items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm text-neutral-300 focus-within:border-indigo-400/60">
+              <Search className="h-4 w-4 shrink-0 text-neutral-500" />
+              <input
+                autoFocus
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search media"
+                className="flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none [&::-webkit-search-cancel-button]:appearance-none"
+              />
+            </label>
+            <button
+              type="button"
+              className="flex items-center gap-2 rounded-md border border-white/15 px-3 py-2 text-sm font-medium text-neutral-200 hover:border-white/25 hover:bg-white/5"
+            >
+              <Plus className="h-4 w-4" />
+              Import
+            </button>
+          </div>
 
           <div role="radiogroup" className="mb-3 flex items-center gap-1 px-1">
             {FILTERS.map(({ value, label }) => {
@@ -114,13 +123,6 @@ export function MediaDialog({ media, timeline, onAdd, onClose, ...windowProps }:
                 onSelect={() => setSelectedId(asset.id)}
               />
             ))}
-            <button
-              type="button"
-              className="flex aspect-video items-center justify-center gap-1.5 self-start rounded-md border border-dashed border-white/15 text-sm text-neutral-500 hover:border-white/30 hover:text-neutral-300"
-            >
-              <Plus className="h-4 w-4" />
-              Import
-            </button>
           </div>
         </div>
 
