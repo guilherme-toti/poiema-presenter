@@ -22,11 +22,15 @@ export function LeftPanel() {
           aria-expanded={menuOpen}
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => setMenuOpen((open) => !open)}
-          className="flex items-center gap-1.5 text-sm font-semibold text-neutral-100"
+          className={`group -mx-2 -my-1 flex items-center gap-1.5 rounded px-2 py-1 text-sm font-semibold text-neutral-100 hover:bg-white/10 ${
+            menuOpen ? 'bg-white/10' : ''
+          }`}
         >
           {current.title} · {current.date}
           <ChevronDown
-            className={`h-3.5 w-3.5 text-neutral-500 transition-transform ${menuOpen ? 'rotate-180' : ''}`}
+            className={`h-3.5 w-3.5 text-neutral-500 transition-transform group-hover:text-neutral-200 ${
+              menuOpen ? 'rotate-180 text-neutral-200' : ''
+            }`}
           />
         </button>
         <button
