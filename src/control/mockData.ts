@@ -24,6 +24,72 @@ export const timelineItems: TimelineItem[] = [
   { key: '09', type: 'image', title: 'Closing', badge: '1' },
 ]
 
+export interface Service {
+  id: string
+  date: string
+  title: string
+  createdLabel: string
+  items: string[]
+  today?: boolean
+}
+
+export const recentServices: Service[] = [
+  {
+    id: 'sep7-am',
+    date: 'Sep 7',
+    title: 'Sunday Service',
+    createdLabel: 'Sep 7, 2026 · created Thu 22:10 · autosaved',
+    items: timelineItems.map((item) => item.title),
+    today: true,
+  },
+  {
+    id: 'sep7-pm',
+    date: 'Sep 7',
+    title: 'Evening Service',
+    createdLabel: 'Sep 7, 2026 · created Fri 09:32 · autosaved',
+    items: ['Countdown 5 min', 'Welcome', 'Free!', 'É Ele', 'Sermon title art', 'Closing'],
+  },
+  {
+    id: 'aug31',
+    date: 'Aug 31',
+    title: 'Sunday Service',
+    createdLabel: 'Aug 31, 2026 · created Thu 21:48 · autosaved',
+    items: [
+      'Countdown 5 min',
+      'Welcome',
+      'Oceans',
+      'Free!',
+      'Baptism announcement',
+      'Sermon title art',
+      'Offering notice',
+      'Closing',
+    ],
+  },
+  {
+    id: 'aug24',
+    date: 'Aug 24',
+    title: 'Youth Night',
+    createdLabel: 'Aug 24, 2026 · created Sat 18:05 · autosaved',
+    items: ['Countdown 10 min', 'Welcome', 'É Ele', 'Free!', 'Closing'],
+  },
+  {
+    id: 'aug17',
+    date: 'Aug 17',
+    title: 'Sunday Service',
+    createdLabel: 'Aug 17, 2026 · created Thu 22:31 · autosaved',
+    items: [
+      'Countdown 5 min',
+      'Welcome',
+      'Oceans',
+      'É Ele',
+      'Retreat announcement',
+      'Sermon title art',
+      'Offering notice',
+      'Closing',
+    ],
+  },
+]
+
 export type SlideState = 'normal' | 'live' | 'next'
 
 export interface SlideRowData {

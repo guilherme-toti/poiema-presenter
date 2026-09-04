@@ -1,16 +1,54 @@
+import { useCallback, useState } from 'react'
 import { ChevronDown, Plus } from 'lucide-react'
 import { TimelineRow } from '../components/TimelineRow'
-import { timelineItems } from '../mockData'
+import { ServicesMenu } from '../components/ServicesMenu'
+import { ServicesDialog } from '../components/ServicesDialog'
+import { recentServices, timelineItems, type Service } from '../mockData'
 
 export function LeftPanel() {
+  const [current, setCurrent] = useState<Service>(recentServices[0])
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
+  const closeDialog = useCallback(() => setDialogOpen(false), [])
+
   return (
     <div className="flex flex-col border-r border-white/8 bg-white/5">
-      <div className="flex items-center justify-between border-b border-white/8 p-4">
-        <button className="flex items-center gap-1.5 text-sm font-semibold text-neutral-100">
-          Sunday Service · Sep 7
-          <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
+      <div className="relative flex items-center justify-between border-b border-white/8 p-4">
+        <button
+          type="button"
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="flex items-center gap-1.5 text-sm font-semibold text-neutral-100"
+        >
+          {current.title} · {current.date}
+          <ChevronDown
+            className={`h-3.5 w-3.5 text-neutral-500 transition-transform ${menuOpen ? 'rotate-180' : ''}`}
+          />
         </button>
-        <Plus className="h-4 w-4 text-neutral-500" />
+        <button
+          type="button"
+          aria-label="Services"
+          onClick={() => setDialogOpen(true)}
+          className="flex h-6 w-6 items-center justify-center rounded text-neutral-500 hover:bg-white/10 hover:text-neutral-200"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+
+        {menuOpen && (
+          <ServicesMenu
+            services={recentServices}
+            currentId={current.id}
+            onSelect={(service) => {
+              setCurrent(service)
+              setMenuOpen(false)
+            }}
+            onClose={closeMenu}
+          />
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto py-2">
@@ -36,6 +74,18 @@ export function LeftPanel() {
           autosaved · {timelineItems.length} items
         </span>
       </div>
+
+      {dialogOpen && (
+        <ServicesDialog
+          services={recentServices}
+          currentId={current.id}
+          onOpen={(service) => {
+            setCurrent(service)
+            setDialogOpen(false)
+          }}
+          onClose={closeDialog}
+        />
+      )}
     </div>
   )
 }
