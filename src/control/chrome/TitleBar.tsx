@@ -1,12 +1,27 @@
+import type { MouseEvent } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { Minus, Square, X } from 'lucide-react'
 
 const appWindow = getCurrentWindow()
 
+// Tauri's built-in double-click handler on drag regions calls
+// `internal_toggle_maximize`, which on macOS only maximizes when the window
+// has an enabled native zoom button — never true for an undecorated window.
+// So it can unmaximize but not re-maximize. We take over the double-click
+// ourselves (stopping the event before Tauri's document listener sees it)
+// and use the public toggle, which has no such gate.
+function onTitleBarMouseUp(e: MouseEvent<HTMLDivElement>) {
+  if (e.button !== 0 || e.detail !== 2) return
+  if ((e.target as HTMLElement).closest('button')) return
+  e.stopPropagation()
+  void appWindow.toggleMaximize()
+}
+
 export function TitleBar() {
   return (
     <div
       data-tauri-drag-region="deep"
+      onMouseUp={onTitleBarMouseUp}
       className="flex h-9 items-center justify-between border-b border-white/8 bg-neutral-900 px-3"
     >
       <div className="flex items-center gap-2">
