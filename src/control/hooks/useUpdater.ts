@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from 'react'
-import { check } from '@tauri-apps/plugin-updater'
+import { check, type Update } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { updaterReducer, INITIAL_UPDATER_STATE } from './updaterReducer'
 
@@ -8,22 +8,35 @@ const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000
 export function useUpdater() {
   const [state, dispatch] = useReducer(updaterReducer, INITIAL_UPDATER_STATE)
   const checkingRef = useRef(false)
+  const updateRef = useRef<Update | null>(null)
+  const cancelledRef = useRef(false)
 
   useEffect(() => {
+    cancelledRef.current = false
+
     const runCheck = async () => {
       if (checkingRef.current) return
       checkingRef.current = true
       dispatch({ type: 'CHECK_STARTED' })
       try {
         const update = await check()
+        if (cancelledRef.current) return
         if (!update) {
           dispatch({ type: 'NO_UPDATE' })
           return
         }
+        // Guardamos o handle em ref para `restart()` usar depois — só é
+        // consumido (via install()) na ação explícita do usuário (RN-07).
+        updateRef.current = update
         dispatch({ type: 'UPDATE_AVAILABLE', version: update.version })
-        await update.downloadAndInstall()
+        // Apenas baixa: download() nunca reinicia/encerra o app em nenhuma
+        // plataforma. install() (que no Windows encerra o processo) só roda
+        // quando o operador clica "Reiniciar agora".
+        await update.download()
+        if (cancelledRef.current) return
         dispatch({ type: 'DOWNLOAD_COMPLETE' })
       } catch (err) {
+        if (cancelledRef.current) return
         // Erros de rede/API não podem virar ruído para o operador (RN-07) — log only.
         console.error('[updater] check failed:', err)
         dispatch({ type: 'CHECK_FAILED', error: String(err) })
@@ -34,8 +47,24 @@ export function useUpdater() {
 
     runCheck()
     const interval = setInterval(runCheck, CHECK_INTERVAL_MS)
-    return () => clearInterval(interval)
+    return () => {
+      cancelledRef.current = true
+      clearInterval(interval)
+    }
   }, [])
 
-  return { ...state, restart: relaunch }
+  const restart = async () => {
+    // Defensivo: UpdateBanner só mostra o botão no estado 'ready', quando
+    // updateRef.current sempre existe — mas não custa não quebrar aqui.
+    if (!updateRef.current) {
+      await relaunch()
+      return
+    }
+    // install() aplica o update (no Windows, encerra e reabre o app sozinho
+    // como parte disso); relaunch() é o que efetivamente reinicia no macOS.
+    await updateRef.current.install()
+    await relaunch()
+  }
+
+  return { ...state, restart }
 }

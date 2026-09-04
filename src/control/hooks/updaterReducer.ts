@@ -22,6 +22,10 @@ export const INITIAL_UPDATER_STATE: UpdaterState = {
 export function updaterReducer(state: UpdaterState, action: UpdaterAction): UpdaterState {
   switch (action.type) {
     case 'CHECK_STARTED':
+      // Uma recheck periódica (6h) não pode apagar o banner "Reiniciar
+      // agora" nem disparar um re-download redundante enquanto o update já
+      // baixado espera o clique do operador (RN-07).
+      if (state.status === 'ready') return state
       return { ...state, status: 'checking', error: null }
     case 'UPDATE_AVAILABLE':
       return { status: 'downloading', version: action.version, error: null }

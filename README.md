@@ -56,9 +56,10 @@ pode ser resolvido depois adquirindo os certificados, sem mudar o pipeline.
 
 ## Auto-updater
 
-O app checa por atualizações em background (no início e a cada 6h), baixa e
-instala silenciosamente quando encontra uma versão nova, e só pede reinício
-por ação explícita do usuário — nunca reinicia sozinho no meio de um culto.
+O app checa por atualizações em background (no início e a cada 6h) e baixa
+silenciosamente quando encontra uma versão nova. A instalação (e o reinício
+que ela implica) só acontece por ação explícita do usuário, no clique de
+"Reiniciar agora" — nunca instala ou reinicia sozinho no meio de um culto.
 
 A assinatura dos pacotes de atualização usa uma chave Ed25519 própria do
 Tauri (sem custo, diferente de certificado de assinatura de código do SO). A
