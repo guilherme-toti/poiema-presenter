@@ -30,11 +30,9 @@ export function ThemesDialog({ onClose, ...windowProps }: ThemesDialogProps) {
   const [sampleId, setSampleId] = useState<string>(SAMPLES_BY_TYPE.song[0].id)
   const [slideIndex, setSlideIndex] = useState(0)
   const [addingSlot, setAddingSlot] = useState(false)
-  // Opens at 70% of the app window; the editor needs room for the preview.
-  const [initialSize] = useState(() => ({
-    w: Math.round(window.innerWidth * 0.7),
-    h: Math.round(window.innerHeight * 0.7),
-  }))
+  // Opens at 70% of the app width; the height follows the inspector's content
+  // (capped by the window shell) so its controls fit without scrolling.
+  const [initialWidth] = useState(() => Math.round(window.innerWidth * 0.7))
   const idCounter = useRef(0)
   const nextId = (prefix: string) => `${prefix}-${++idCounter.current}`
 
@@ -127,8 +125,7 @@ export function ThemesDialog({ onClose, ...windowProps }: ThemesDialogProps) {
     <DialogShell
       title="Themes"
       titleId="themes-dialog-title"
-      initialWidth={initialSize.w}
-      initialHeight={initialSize.h}
+      initialWidth={initialWidth}
       minWidth={960}
       minHeight={600}
       onClose={onClose}

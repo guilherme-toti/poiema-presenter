@@ -33,11 +33,11 @@ const BACKGROUNDS: { value: Background; label: string }[] = [
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="border-b border-white/8 px-4 py-2">
-      <div className="mb-2 font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
+    <div className="border-b border-white/8 px-4 py-4">
+      <div className="mb-3 font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
         {title}
       </div>
-      <div className="flex flex-col gap-2">{children}</div>
+      <div className="flex flex-col gap-3.5">{children}</div>
     </div>
   )
 }
@@ -273,7 +273,7 @@ export function SlotInspector({
             ]}
           />
         </Row>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           <Toggle label="Italic" value={s.italic} onChange={(italic) => onChange({ italic })} />
           <Toggle
             label="Uppercase"
@@ -311,7 +311,7 @@ export function SlotInspector({
             onChange={(opacity) => onChange({ opacity })}
           />
         </Row>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           <Toggle label="Shadow" value={s.shadow} onChange={(shadow) => onChange({ shadow })} />
           <Toggle label="Pill background" value={s.pill} onChange={(pill) => onChange({ pill })} />
         </div>

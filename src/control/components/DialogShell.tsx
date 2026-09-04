@@ -16,9 +16,12 @@ export interface WindowProps {
 interface DialogShellProps extends WindowProps {
   title: string
   titleId: string
-  /** Omit to size the window to its content until the user resizes it. */
+  /**
+   * Omit either to size the window to its content (capped to the viewport)
+   * until the user resizes it.
+   */
   initialWidth?: number
-  initialHeight: number
+  initialHeight?: number
   minWidth?: number
   minHeight?: number
   onClose: () => void
@@ -156,7 +159,7 @@ export function DialogShell({
       aria-labelledby={titleId}
       onPointerDownCapture={onFocus}
       style={style}
-      className={`fixed flex max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-lg border bg-neutral-900 shadow-2xl shadow-black/60 ${
+      className={`fixed flex max-h-[90vh] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-lg border bg-neutral-900 shadow-2xl shadow-black/60 ${
         focused ? 'border-white/15' : 'border-white/10'
       }`}
     >
