@@ -51,8 +51,20 @@ export interface SlotStyle {
   /** 0–100 */
   opacity: number
   shadow: boolean
+  /** Shadow blur radius in px at 1080p. */
+  shadowBlur: number
+  /** Vertical shadow distance in px at 1080p. */
+  shadowDistance: number
+  /** 0–100 */
+  shadowOpacity: number
   /** Translucent pill behind the text, for busy backgrounds. */
   pill: boolean
+  /** 0–100 */
+  pillOpacity: number
+  /** Horizontal padding in px at 1080p (vertical is half). */
+  pillPadding: number
+  /** Corner radius in px at 1080p. */
+  pillRadius: number
 }
 
 export interface Slot {
@@ -96,7 +108,13 @@ const base: SlotStyle = {
   lineHeight: 1.2,
   opacity: 100,
   shadow: true,
+  shadowBlur: 16,
+  shadowDistance: 4,
+  shadowOpacity: 70,
   pill: false,
+  pillOpacity: 50,
+  pillPadding: 24,
+  pillRadius: 12,
 }
 
 const translation: SlotStyle = {

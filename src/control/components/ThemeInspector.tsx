@@ -51,6 +51,11 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
   )
 }
 
+/** Indented options that belong to the toggle right above them. */
+function SubRows({ children }: { children: ReactNode }) {
+  return <div className="ml-3 flex flex-col gap-3 border-l border-white/10 pl-3">{children}</div>
+}
+
 function Chips<T extends string | number>({
   value,
   options,
@@ -311,10 +316,79 @@ export function SlotInspector({
             onChange={(opacity) => onChange({ opacity })}
           />
         </Row>
-        <div className="grid grid-cols-2 gap-3">
-          <Toggle label="Shadow" value={s.shadow} onChange={(shadow) => onChange({ shadow })} />
-          <Toggle label="Pill background" value={s.pill} onChange={(pill) => onChange({ pill })} />
-        </div>
+      </Section>
+
+      <Section title="Legibility">
+        <Toggle label="Shadow" value={s.shadow} onChange={(shadow) => onChange({ shadow })} />
+        {s.shadow && (
+          <SubRows>
+            <Row label="Blur">
+              <Slider
+                label="Shadow blur"
+                value={s.shadowBlur}
+                min={0}
+                max={60}
+                unit="px"
+                onChange={(shadowBlur) => onChange({ shadowBlur })}
+              />
+            </Row>
+            <Row label="Distance">
+              <Slider
+                label="Shadow distance"
+                value={s.shadowDistance}
+                min={0}
+                max={30}
+                unit="px"
+                onChange={(shadowDistance) => onChange({ shadowDistance })}
+              />
+            </Row>
+            <Row label="Opacity">
+              <Slider
+                label="Shadow opacity"
+                value={s.shadowOpacity}
+                min={10}
+                max={100}
+                unit="%"
+                onChange={(shadowOpacity) => onChange({ shadowOpacity })}
+              />
+            </Row>
+          </SubRows>
+        )}
+        <Toggle label="Pill background" value={s.pill} onChange={(pill) => onChange({ pill })} />
+        {s.pill && (
+          <SubRows>
+            <Row label="Opacity">
+              <Slider
+                label="Pill opacity"
+                value={s.pillOpacity}
+                min={10}
+                max={100}
+                unit="%"
+                onChange={(pillOpacity) => onChange({ pillOpacity })}
+              />
+            </Row>
+            <Row label="Padding">
+              <Slider
+                label="Pill padding"
+                value={s.pillPadding}
+                min={0}
+                max={80}
+                unit="px"
+                onChange={(pillPadding) => onChange({ pillPadding })}
+              />
+            </Row>
+            <Row label="Radius">
+              <Slider
+                label="Pill radius"
+                value={s.pillRadius}
+                min={0}
+                max={60}
+                unit="px"
+                onChange={(pillRadius) => onChange({ pillRadius })}
+              />
+            </Row>
+          </SubRows>
+        )}
       </Section>
     </>
   )

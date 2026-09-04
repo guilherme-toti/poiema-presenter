@@ -39,7 +39,16 @@ function slotStyle(slot: Slot): CSSProperties {
     textAlign: s.align,
     lineHeight: s.lineHeight,
     opacity: s.opacity / 100,
-    textShadow: s.shadow ? `0 ${cq(4)} ${cq(16)} rgba(0,0,0,0.7)` : 'none',
+    textShadow: s.shadow
+      ? `0 ${cq(s.shadowDistance)} ${cq(s.shadowBlur)} rgba(0,0,0,${s.shadowOpacity / 100})`
+      : 'none',
+    ...(s.pill
+      ? {
+          backgroundColor: `rgba(0,0,0,${s.pillOpacity / 100})`,
+          padding: `${cq(s.pillPadding / 2)} ${cq(s.pillPadding)}`,
+          borderRadius: cq(s.pillRadius),
+        }
+      : {}),
     whiteSpace: 'pre-line',
   }
 }
@@ -120,9 +129,7 @@ export function ThemePreview({
                 interactive
                   ? 'cursor-pointer rounded-sm outline-offset-4 hover:outline hover:outline-1 hover:outline-white/30'
                   : ''
-              } ${selected ? 'outline outline-1 outline-indigo-400' : ''} ${
-                slot.style.pill ? 'rounded-[0.6cqw] bg-black/50 px-[1.2cqw] py-[0.6cqw]' : ''
-              }`}
+              } ${selected ? 'outline outline-1 outline-indigo-400' : ''}`}
               style={slotStyle(slot)}
             >
               {text || <span className="opacity-40">{`{${slot.field}}`}</span>}
