@@ -9,6 +9,7 @@ import { UpdateBanner } from './components/UpdateBanner'
 import { ServicesDialog } from './components/ServicesDialog'
 import { SongsDialog } from './components/SongsDialog'
 import { MediaDialog } from './components/MediaDialog'
+import { ThemesDialog } from './components/ThemesDialog'
 import { useUpdater } from './hooks/useUpdater'
 import type { DragPayload } from './lib/dnd'
 import {
@@ -24,7 +25,12 @@ import { songs, type Song } from './mockSongs'
 import { media, type MediaAsset } from './mockMedia'
 
 /** Libraries that already have a dialog. The rest are placeholders for now. */
-const DIALOG_LIBRARIES: ReadonlySet<Library> = new Set<Library>(['service', 'songs', 'media'])
+const DIALOG_LIBRARIES: ReadonlySet<Library> = new Set<Library>([
+  'service',
+  'songs',
+  'media',
+  'themes',
+])
 const WINDOW_BASE_Z = 40
 
 function App() {
@@ -133,6 +139,8 @@ function App() {
                 {...windowProps(library)}
               />
             )
+          case 'themes':
+            return <ThemesDialog key={library} {...windowProps(library)} />
           default:
             return null
         }
