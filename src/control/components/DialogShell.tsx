@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
@@ -75,6 +76,14 @@ export function DialogShell({
   const ref = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<Point | null>(null)
   const [size, setSize] = useState<Size | null>(null)
+  // Content-sized height is measured once at open and then kept, so the
+  // window never shrinks or grows because its content changed.
+  const [contentHeight, setContentHeight] = useState<number | null>(null)
+
+  useLayoutEffect(() => {
+    if (initialHeight !== undefined || !ref.current) return
+    setContentHeight(ref.current.getBoundingClientRect().height)
+  }, [initialHeight])
 
   useEffect(() => {
     if (!focused) return
@@ -144,7 +153,7 @@ export function DialogShell({
   const style = {
     zIndex,
     width: size?.w ?? initialWidth,
-    height: size?.h ?? initialHeight,
+    height: size?.h ?? initialHeight ?? contentHeight ?? undefined,
     minWidth,
     minHeight,
     ...(pos
