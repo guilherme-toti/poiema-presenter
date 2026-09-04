@@ -1,28 +1,46 @@
 // Dados estáticos só para a UI ter conteúdo pra mostrar — não é o modelo real
 // (isso vem da Fase 2, com SQLite). Servem só para bater com o mockup visual.
+// As letras são inventadas: são placeholders, não letras reais.
 
 export type TimelineItemType = 'countdown' | 'image' | 'song' | 'text'
 
+export interface TimelineHeader {
+  kind: 'header'
+  id: string
+  title: string
+}
+
 export interface TimelineItem {
-  key: string
+  kind: 'item'
+  id: string
   type: TimelineItemType
   title: string
   badge?: string
-  selected?: boolean
-  sectionAbove?: string
+  songId?: string
 }
 
-export const timelineItems: TimelineItem[] = [
-  { key: '01', type: 'countdown', title: 'Countdown 5 min', badge: 'loop' },
-  { key: '02', type: 'image', title: 'Welcome', badge: '1' },
-  { key: '03', type: 'song', title: 'Oceans', badge: '2/14', selected: true },
-  { key: '04', type: 'song', title: 'É Ele', badge: '11' },
-  { key: '05', type: 'song', title: 'Free!', badge: '9' },
-  { key: '06', type: 'image', title: 'Retreat announcement', badge: '1' },
-  { key: '07', type: 'image', title: 'Sermon title art', badge: '1', sectionAbove: 'WORD' },
-  { key: '08', type: 'text', title: 'Offering notice', badge: '2' },
-  { key: '09', type: 'image', title: 'Closing', badge: '1' },
+export type TimelineEntry = TimelineHeader | TimelineItem
+
+/** Headers created with every new service, in order. */
+export const DEFAULT_HEADERS = ['Media', 'Songs']
+
+export const timelineEntries: TimelineEntry[] = [
+  { kind: 'header', id: 'h-media', title: 'Media' },
+  { kind: 'item', id: 'countdown', type: 'countdown', title: 'Countdown 5 min', badge: 'loop' },
+  { kind: 'item', id: 'welcome', type: 'image', title: 'Welcome', badge: '1' },
+  { kind: 'item', id: 'retreat', type: 'image', title: 'Retreat announcement', badge: '1' },
+  { kind: 'header', id: 'h-songs', title: 'Songs' },
+  { kind: 'item', id: 'oceans-1', type: 'song', title: 'Oceans', badge: '2/14', songId: 'oceans' },
+  { kind: 'item', id: 'e-ele-1', type: 'song', title: 'É Ele', badge: '11', songId: 'e-ele' },
+  { kind: 'item', id: 'free-1', type: 'song', title: 'Free!', badge: '9', songId: 'free' },
+  { kind: 'header', id: 'h-word', title: 'WORD' },
+  { kind: 'item', id: 'sermon-art', type: 'image', title: 'Sermon title art', badge: '1' },
+  { kind: 'item', id: 'offering', type: 'text', title: 'Offering notice', badge: '2' },
+  { kind: 'item', id: 'closing', type: 'image', title: 'Closing', badge: '1' },
 ]
+
+export const timelineItemsOf = (entries: TimelineEntry[]): TimelineItem[] =>
+  entries.filter((e): e is TimelineItem => e.kind === 'item')
 
 export interface Service {
   id: string
@@ -39,7 +57,7 @@ export const recentServices: Service[] = [
     date: 'Sep 7',
     title: 'Sunday Service',
     createdLabel: 'Sep 7, 2026 · created Thu 22:10 · autosaved',
-    items: timelineItems.map((item) => item.title),
+    items: timelineItemsOf(timelineEntries).map((item) => item.title),
     today: true,
   },
   {
@@ -102,19 +120,44 @@ export interface SlideRowData {
 }
 
 export const currentSongSlides: SlideRowData[] = [
-  { key: '1', part: 'Verse 1', text: 'You call me out / upon the waters', state: 'normal' },
-  { key: '2', part: 'Verse 1', text: 'where feet may fail / and there I find You', state: 'live' },
-  { key: '3', part: 'Verse 1', text: 'in the mystery / in oceans deep', state: 'next' },
-  { key: '4', part: 'Chorus', text: 'my faith will stand / and I will call upon', state: 'normal' },
-  { key: '5', part: 'Chorus', text: 'Your name on me / keep my eyes above', state: 'normal' },
-  { key: '6', part: 'Chorus', text: 'the waves and sea / through the storm', state: 'normal' },
-  { key: '7', part: 'Bridge', text: 'Spirit lead me / where my trust is', state: 'normal' },
-  { key: '8', part: 'Bridge', text: 'without borders / let me walk upon', state: 'normal' },
-  { key: '9', part: 'Bridge', text: 'the waters, wherever / You would call me', state: 'normal' },
+  { key: '1', part: 'Verse 1', text: 'Over quiet water / Your voice is calling', state: 'normal' },
+  {
+    key: '2',
+    part: 'Verse 1',
+    text: 'Every step is trembling / still I keep on walking',
+    state: 'live',
+  },
+  {
+    key: '3',
+    part: 'Verse 1',
+    text: 'Deeper than my knowing / wider than my seeing',
+    state: 'next',
+  },
+  { key: '4', part: 'Chorus', text: 'I will hold on / when the waves are rising', state: 'normal' },
+  {
+    key: '5',
+    part: 'Chorus',
+    text: 'You are the anchor / that will not be moving',
+    state: 'normal',
+  },
+  { key: '6', part: 'Chorus', text: 'Through every storm / my heart is resting', state: 'normal' },
+  {
+    key: '7',
+    part: 'Bridge',
+    text: 'Take me further / than my feet would wander',
+    state: 'normal',
+  },
+  { key: '8', part: 'Bridge', text: 'Past the edges / of the shore I know', state: 'normal' },
+  {
+    key: '9',
+    part: 'Bridge',
+    text: 'Where my courage / learns to trust You fully',
+    state: 'normal',
+  },
   {
     key: '·',
     part: 'Chorus',
-    text: 'my faith will stand / and I will call upon',
+    text: 'I will hold on / when the waves are rising',
     state: 'normal',
     dimmed: true,
     trailingLabel: '10',

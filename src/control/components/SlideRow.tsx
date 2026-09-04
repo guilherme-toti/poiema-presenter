@@ -13,7 +13,9 @@ export function SlideRow({ slide }: { slide: SlideRowData }) {
     >
       <span className="font-mono text-sm text-neutral-400">{slide.key}</span>
       <span className="text-sm text-neutral-400">{slide.part}</span>
-      <span className={`truncate text-sm ${slide.state === 'live' ? 'text-neutral-100' : 'text-neutral-200'}`}>
+      <span
+        className={`truncate text-sm ${slide.state === 'live' ? 'text-neutral-100' : 'text-neutral-200'}`}
+      >
         {slide.text}
       </span>
       <span className="text-right font-mono text-xs">

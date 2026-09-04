@@ -10,20 +10,27 @@ import {
   Monitor,
 } from 'lucide-react'
 
+export type Library =
+  'service' | 'songs' | 'media' | 'backgrounds' | 'texts' | 'schedule' | 'themes' | 'screens'
+
 interface NavItem {
+  library: Library
   icon: LucideIcon
   label: string
 }
 
 interface NavIconProps extends NavItem {
-  active?: boolean
+  active: boolean
+  onOpen: (library: Library) => void
 }
 
-function NavIcon({ icon: Icon, label, active }: NavIconProps) {
+function NavIcon({ library, icon: Icon, label, active, onOpen }: NavIconProps) {
   return (
     <button
       type="button"
       aria-label={label}
+      aria-pressed={active}
+      onClick={() => onOpen(library)}
       className="group relative flex h-9 w-9 items-center justify-center"
     >
       {/* Pill: sits behind the icon at 36px, grows to the right on hover revealing the label */}
@@ -50,29 +57,35 @@ function NavIcon({ icon: Icon, label, active }: NavIconProps) {
 }
 
 const topItems: NavItem[] = [
-  { icon: ListOrdered, label: 'Service' },
-  { icon: Music, label: 'Songs' },
-  { icon: Image, label: 'Media' },
-  { icon: MonitorPlay, label: 'Backgrounds' },
-  { icon: AlignLeft, label: 'Texts' },
-  { icon: Calendar, label: 'Schedule' },
+  { library: 'service', icon: ListOrdered, label: 'Service' },
+  { library: 'songs', icon: Music, label: 'Songs' },
+  { library: 'media', icon: Image, label: 'Media' },
+  { library: 'backgrounds', icon: MonitorPlay, label: 'Backgrounds' },
+  { library: 'texts', icon: AlignLeft, label: 'Texts' },
+  { library: 'schedule', icon: Calendar, label: 'Schedule' },
 ]
 const bottomItems: NavItem[] = [
-  { icon: Type, label: 'Themes' },
-  { icon: Monitor, label: 'Screens' },
+  { library: 'themes', icon: Type, label: 'Themes' },
+  { library: 'screens', icon: Monitor, label: 'Screens' },
 ]
 
-export function NavRail() {
+interface NavRailProps {
+  /** Library whose dialog is currently open, if any. */
+  active: Library | null
+  onOpen: (library: Library) => void
+}
+
+export function NavRail({ active, onOpen }: NavRailProps) {
   return (
     <div className="flex flex-col items-center justify-between border-r border-white/8 bg-neutral-900 py-3">
       <div className="flex flex-col gap-1">
-        {topItems.map((item, index) => (
-          <NavIcon key={item.label} {...item} active={index === 0} />
+        {topItems.map((item) => (
+          <NavIcon key={item.library} {...item} active={active === item.library} onOpen={onOpen} />
         ))}
       </div>
       <div className="flex flex-col gap-1">
         {bottomItems.map((item) => (
-          <NavIcon key={item.label} {...item} />
+          <NavIcon key={item.library} {...item} active={active === item.library} onOpen={onOpen} />
         ))}
       </div>
     </div>
