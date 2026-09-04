@@ -5,6 +5,11 @@ pub const PROJECTOR_LABEL: &str = "projector";
 
 #[tauri::command]
 pub async fn open_projector(app: AppHandle, monitor_name: Option<String>) -> Result<(), String> {
+  // TODO: se `monitor_name` pedir um monitor diferente do que a janela
+  // "projector" já existente está exibindo, este early-return não a
+  // reposiciona — hoje inofensivo pois o frontend sempre passa
+  // monitorName: null, mas vira bug real quando a seleção de monitor for
+  // implementada.
   if let Some(window) = app.get_webview_window(PROJECTOR_LABEL) {
     window.show().map_err(|e| e.to_string())?;
     return Ok(());

@@ -26,7 +26,13 @@ export function RightPanel() {
         >
           Abrir Projetor
         </button>
-        {error && <span className="text-xs text-red-400">{error}</span>}
+        {error && (
+          <span
+            className={`text-xs ${error.includes('modo ensaio') ? 'text-amber-400' : 'text-red-400'}`}
+          >
+            {error}
+          </span>
+        )}
       </div>
     </div>
   )
