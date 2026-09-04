@@ -770,7 +770,7 @@ export function bumpSemver(current, bumpType) {
   if (!match) {
     throw new Error(`Invalid version "${current}", expected "x.y.z"`)
   }
-  const [, major, minor, patch] = match.slice(1).map(Number)
+  const [major, minor, patch] = match.slice(1).map(Number)
 
   switch (bumpType) {
     case 'major':
