@@ -10,11 +10,20 @@ export function useUpdater() {
   const checkingRef = useRef(false)
   const updateRef = useRef<Update | null>(null)
   const cancelledRef = useRef(false)
+  const statusRef = useRef(state.status)
+
+  useEffect(() => {
+    statusRef.current = state.status
+  }, [state.status])
 
   useEffect(() => {
     cancelledRef.current = false
 
     const runCheck = async () => {
+      // Já há um update baixado esperando o clique do operador — não há
+      // nada para checar e um recheck aqui só piscaria o banner "Reiniciar
+      // agora" e rebaixaria o mesmo update à toa (RN-07).
+      if (statusRef.current === 'ready') return
       if (checkingRef.current) return
       checkingRef.current = true
       dispatch({ type: 'CHECK_STARTED' })

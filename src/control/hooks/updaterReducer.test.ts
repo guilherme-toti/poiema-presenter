@@ -43,6 +43,32 @@ describe('updaterReducer', () => {
     expect(state).toEqual({ status: 'ready', version: '0.2.0', error: null })
   })
 
+  it('ignores UPDATE_AVAILABLE while ready, keeping the banner up', () => {
+    const downloading = updaterReducer(
+      updaterReducer(INITIAL_UPDATER_STATE, { type: 'CHECK_STARTED' }),
+      { type: 'UPDATE_AVAILABLE', version: '0.2.0' },
+    )
+    const ready = updaterReducer(downloading, { type: 'DOWNLOAD_COMPLETE' })
+    const state = updaterReducer(ready, { type: 'UPDATE_AVAILABLE', version: '0.3.0' })
+    expect(state).toBe(ready)
+    expect(state).toEqual({ status: 'ready', version: '0.2.0', error: null })
+  })
+
+  it('ignores DOWNLOAD_COMPLETE while ready, keeping the banner up', () => {
+    const downloading = updaterReducer(
+      updaterReducer(INITIAL_UPDATER_STATE, { type: 'CHECK_STARTED' }),
+      { type: 'UPDATE_AVAILABLE', version: '0.2.0' },
+    )
+    const ready = updaterReducer(downloading, { type: 'DOWNLOAD_COMPLETE' })
+    const state = updaterReducer(ready, { type: 'DOWNLOAD_COMPLETE' })
+    // DOWNLOAD_COMPLETE only ever touches `status`, which is already 'ready'
+    // here, so a deep-equality check can't tell a guarded no-op apart from
+    // an unguarded `{...state, status: 'ready'}` spread (same values, new
+    // object). Reference equality is what actually proves the guard fired.
+    expect(state).toBe(ready)
+    expect(state).toEqual({ status: 'ready', version: '0.2.0', error: null })
+  })
+
   it('moves to error on CHECK_FAILED, keeping the message', () => {
     const state = updaterReducer(INITIAL_UPDATER_STATE, {
       type: 'CHECK_FAILED',

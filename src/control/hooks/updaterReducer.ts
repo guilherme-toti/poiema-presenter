@@ -28,10 +28,16 @@ export function updaterReducer(state: UpdaterState, action: UpdaterAction): Upda
       if (state.status === 'ready') return state
       return { ...state, status: 'checking', error: null }
     case 'UPDATE_AVAILABLE':
+      // Defesa em profundidade: mesmo que o recheck periódico não devesse
+      // rodar em 'ready' (ver useUpdater.ts), a UI não pode piscar para fora
+      // do banner "Reiniciar agora" se esse caminho for alcançado (RN-07).
+      if (state.status === 'ready') return state
       return { status: 'downloading', version: action.version, error: null }
     case 'NO_UPDATE':
       return { status: 'idle', version: null, error: null }
     case 'DOWNLOAD_COMPLETE':
+      // Mesma defesa em profundidade que UPDATE_AVAILABLE acima.
+      if (state.status === 'ready') return state
       return { ...state, status: 'ready' }
     case 'CHECK_FAILED':
       return { ...state, status: 'error', error: action.error }
