@@ -4,7 +4,7 @@ import { Minus, Square, X } from 'lucide-react'
 interface DialogShellProps {
   title: string
   titleId: string
-  /** Extra classes for the dialog box (width, height, transitions). */
+  /** Sizing classes for the dialog box: width (or `w-auto` for content-sized) and height. */
   className: string
   onClose: () => void
   children: ReactNode
@@ -33,7 +33,7 @@ export function DialogShell({ title, titleId, className, onClose, children }: Di
         aria-modal="true"
         aria-labelledby={titleId}
         onPointerDown={(e) => e.stopPropagation()}
-        className={`flex w-full flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl shadow-black/60 ${className}`}
+        className={`flex flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl shadow-black/60 ${className}`}
       >
         <div className="flex h-9 shrink-0 items-center justify-between border-b border-white/8 px-3">
           <div className="flex items-center gap-2">

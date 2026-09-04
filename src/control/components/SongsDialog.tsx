@@ -4,6 +4,7 @@ import type { TimelineEntry } from '../mockData'
 import { recentSongs, searchSongs, songSlideCount, type Song } from '../mockSongs'
 import { timelineHasSong } from '../lib/timeline'
 import { DialogShell } from './DialogShell'
+import { DetailPane } from './DetailPane'
 import { SongRow } from './SongRow'
 
 const ADDED_FEEDBACK_MS = 1200
@@ -47,17 +48,11 @@ export function SongsDialog({ songs, timeline, onAdd, onClose }: SongsDialogProp
     <DialogShell
       title="Songs"
       titleId="songs-dialog-title"
-      className={`h-[600px] transition-[max-width] duration-300 ease-out ${
-        selected ? 'max-w-[1040px]' : 'max-w-[640px]'
-      }`}
+      className="h-[600px] w-auto max-w-full"
       onClose={onClose}
     >
-      <div
-        className={`grid flex-1 overflow-hidden ${
-          selected ? 'grid-cols-[1fr_400px]' : 'grid-cols-1'
-        }`}
-      >
-        <div className="flex flex-col overflow-hidden border-r border-white/8 p-3">
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex w-[640px] shrink-0 flex-col overflow-hidden p-3">
           <div className="mb-3 flex items-center gap-2">
             <label className="flex flex-1 items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm text-neutral-300 focus-within:border-indigo-400/60">
               <Search className="h-4 w-4 shrink-0 text-neutral-500" />
@@ -104,84 +99,86 @@ export function SongsDialog({ songs, timeline, onAdd, onClose }: SongsDialogProp
           </div>
         </div>
 
-        {selected && (
-          <div className="flex flex-col overflow-hidden p-6">
-            <h3 className="text-xl font-semibold text-neutral-100">{selected.title}</h3>
-            <p className="mt-1 font-mono text-xs text-neutral-500">
-              {selected.artist} · {songSlideCount(selected)} slides · last used{' '}
-              {formatLastUsed(selected.lastUsed)}
-            </p>
+        <DetailPane open={selected !== null}>
+          {selected && (
+            <div className="flex flex-1 flex-col overflow-hidden p-6">
+              <h3 className="text-xl font-semibold text-neutral-100">{selected.title}</h3>
+              <p className="mt-1 font-mono text-xs text-neutral-500">
+                {selected.artist} · {songSlideCount(selected)} slides · last used{' '}
+                {formatLastUsed(selected.lastUsed)}
+              </p>
 
-            <div className="mt-5 flex-1 space-y-5 overflow-y-auto pr-2">
-              {selected.sections.map((section) => (
-                <div key={section.label}>
-                  <div className="mb-1.5 font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
-                    {section.label}
+              <div className="mt-5 flex-1 space-y-5 overflow-y-auto pr-2">
+                {selected.sections.map((section) => (
+                  <div key={section.label}>
+                    <div className="mb-1.5 font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
+                      {section.label}
+                    </div>
+                    <p className="text-sm leading-relaxed text-neutral-300">
+                      {section.lines.map((line, i) => (
+                        <span key={i} className="block">
+                          {line}
+                        </span>
+                      ))}
+                    </p>
                   </div>
-                  <p className="text-sm leading-relaxed text-neutral-300">
-                    {section.lines.map((line, i) => (
-                      <span key={i} className="block">
-                        {line}
-                      </span>
-                    ))}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="mt-5 flex flex-col gap-3">
-              <button
-                type="button"
-                onClick={() => add(selected)}
-                className={`flex items-center justify-center gap-2 rounded-md border py-3.5 text-base font-medium transition-colors ${
-                  justAddedId === selected.id
-                    ? 'border-emerald-400/60 bg-emerald-500/10 text-emerald-200'
-                    : 'border-indigo-400/60 text-neutral-100 hover:bg-indigo-500/10'
-                }`}
-              >
-                {justAddedId === selected.id ? (
-                  <>
-                    <Check className="h-4 w-4" />
-                    Added
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-4 w-4 text-indigo-300" />
-                    Add to service
-                  </>
-                )}
-              </button>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="mt-5 flex flex-col gap-3">
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 rounded-md border border-white/10 py-3 text-sm text-neutral-200 hover:bg-white/5"
+                  onClick={() => add(selected)}
+                  className={`flex items-center justify-center gap-2 rounded-md border py-3.5 text-base font-medium transition-colors ${
+                    justAddedId === selected.id
+                      ? 'border-emerald-400/60 bg-emerald-500/10 text-emerald-200'
+                      : 'border-indigo-400/60 text-neutral-100 hover:bg-indigo-500/10'
+                  }`}
                 >
-                  <Copy className="h-4 w-4" />
-                  Duplicate
+                  {justAddedId === selected.id ? (
+                    <>
+                      <Check className="h-4 w-4" />
+                      Added
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-4 w-4 text-indigo-300" />
+                      Add to service
+                    </>
+                  )}
                 </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    className="flex items-center justify-center gap-2 rounded-md border border-white/10 py-3 text-sm text-neutral-200 hover:bg-white/5"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Duplicate
+                  </button>
+                  <button
+                    type="button"
+                    className="flex items-center justify-center gap-2 rounded-md border border-white/10 py-3 text-sm text-neutral-200 hover:bg-white/5"
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Edit
+                  </button>
+                </div>
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 rounded-md border border-white/10 py-3 text-sm text-neutral-200 hover:bg-white/5"
+                  disabled={selectedInService}
+                  className={`flex items-center justify-center gap-2 rounded-md border py-3 text-sm ${
+                    selectedInService
+                      ? 'border-white/8 text-neutral-600'
+                      : 'border-white/10 text-neutral-200 hover:bg-white/5'
+                  }`}
                 >
-                  <Pencil className="h-4 w-4" />
-                  Edit
+                  <Trash2 className="h-4 w-4" />
+                  {selectedInService ? 'Delete — in current service' : 'Delete'}
                 </button>
               </div>
-              <button
-                type="button"
-                disabled={selectedInService}
-                className={`flex items-center justify-center gap-2 rounded-md border py-3 text-sm ${
-                  selectedInService
-                    ? 'border-white/8 text-neutral-600'
-                    : 'border-white/10 text-neutral-200 hover:bg-white/5'
-                }`}
-              >
-                <Trash2 className="h-4 w-4" />
-                {selectedInService ? 'Delete — in current service' : 'Delete'}
-              </button>
             </div>
-          </div>
-        )}
+          )}
+        </DetailPane>
       </div>
     </DialogShell>
   )

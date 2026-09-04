@@ -2,7 +2,7 @@
 // (isso vem da Fase 2, com SQLite). Servem só para bater com o mockup visual.
 // As letras são inventadas: são placeholders, não letras reais.
 
-export type TimelineItemType = 'countdown' | 'image' | 'song' | 'text'
+export type TimelineItemType = 'countdown' | 'image' | 'video' | 'song' | 'text'
 
 export interface TimelineHeader {
   kind: 'header'
@@ -17,6 +17,7 @@ export interface TimelineItem {
   title: string
   badge?: string
   songId?: string
+  mediaId?: string
 }
 
 export type TimelineEntry = TimelineHeader | TimelineItem
@@ -26,17 +27,45 @@ export const DEFAULT_HEADERS = ['Media', 'Songs']
 
 export const timelineEntries: TimelineEntry[] = [
   { kind: 'header', id: 'h-media', title: 'Media' },
-  { kind: 'item', id: 'countdown', type: 'countdown', title: 'Countdown 5 min', badge: 'loop' },
-  { kind: 'item', id: 'welcome', type: 'image', title: 'Welcome', badge: '1' },
-  { kind: 'item', id: 'retreat', type: 'image', title: 'Retreat announcement', badge: '1' },
+  {
+    kind: 'item',
+    id: 'countdown',
+    type: 'countdown',
+    title: 'Countdown 5 min',
+    badge: 'loop',
+    mediaId: 'countdown-5min',
+  },
+  {
+    kind: 'item',
+    id: 'welcome',
+    type: 'image',
+    title: 'Welcome',
+    badge: '1',
+    mediaId: 'welcome-poiema',
+  },
+  {
+    kind: 'item',
+    id: 'retreat',
+    type: 'image',
+    title: 'Retreat announcement',
+    badge: '1',
+    mediaId: 'retreat-2026',
+  },
   { kind: 'header', id: 'h-songs', title: 'Songs' },
   { kind: 'item', id: 'oceans-1', type: 'song', title: 'Oceans', badge: '2/14', songId: 'oceans' },
   { kind: 'item', id: 'e-ele-1', type: 'song', title: 'É Ele', badge: '11', songId: 'e-ele' },
   { kind: 'item', id: 'free-1', type: 'song', title: 'Free!', badge: '9', songId: 'free' },
   { kind: 'header', id: 'h-word', title: 'WORD' },
-  { kind: 'item', id: 'sermon-art', type: 'image', title: 'Sermon title art', badge: '1' },
+  {
+    kind: 'item',
+    id: 'sermon-art',
+    type: 'image',
+    title: 'Sermon title art',
+    badge: '1',
+    mediaId: 'sermon-art',
+  },
   { kind: 'item', id: 'offering', type: 'text', title: 'Offering notice', badge: '2' },
-  { kind: 'item', id: 'closing', type: 'image', title: 'Closing', badge: '1' },
+  { kind: 'item', id: 'closing', type: 'image', title: 'Closing', badge: '1', mediaId: 'closing' },
 ]
 
 export const timelineItemsOf = (entries: TimelineEntry[]): TimelineItem[] =>

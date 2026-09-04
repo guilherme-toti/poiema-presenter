@@ -22,7 +22,7 @@ export function ServicesDialog({ services, currentId, onOpen, onClose }: Service
     <DialogShell
       title="Services"
       titleId="services-dialog-title"
-      className="h-[680px] max-w-[1200px]"
+      className="h-[680px] w-full max-w-[1200px]"
       onClose={onClose}
     >
       <div className="grid flex-1 grid-cols-[1fr_minmax(360px,440px)] overflow-hidden">

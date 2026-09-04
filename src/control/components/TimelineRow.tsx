@@ -1,9 +1,10 @@
-import { AlignLeft, Image, Music, MonitorPlay } from 'lucide-react'
+import { AlignLeft, Film, Image, Music, MonitorPlay } from 'lucide-react'
 import type { TimelineItem, TimelineItemType } from '../mockData'
 
 const ICONS: Record<TimelineItemType, typeof Image> = {
   countdown: MonitorPlay,
   image: Image,
+  video: Film,
   song: Music,
   text: AlignLeft,
 }

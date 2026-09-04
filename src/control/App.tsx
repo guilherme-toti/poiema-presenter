@@ -8,13 +8,15 @@ import { RightPanel } from './panels/RightPanel'
 import { UpdateBanner } from './components/UpdateBanner'
 import { ServicesDialog } from './components/ServicesDialog'
 import { SongsDialog } from './components/SongsDialog'
+import { MediaDialog } from './components/MediaDialog'
 import { useUpdater } from './hooks/useUpdater'
-import { addSongToTimeline } from './lib/timeline'
+import { addMediaToTimeline, addSongToTimeline } from './lib/timeline'
 import { recentServices, timelineEntries, type Service, type TimelineEntry } from './mockData'
 import { songs, type Song } from './mockSongs'
+import { media, type MediaAsset } from './mockMedia'
 
 /** Libraries that already have a dialog. The rest are placeholders for now. */
-const DIALOG_LIBRARIES: ReadonlySet<Library> = new Set<Library>(['service', 'songs'])
+const DIALOG_LIBRARIES: ReadonlySet<Library> = new Set<Library>(['service', 'songs', 'media'])
 
 function App() {
   const updater = useUpdater()
@@ -38,6 +40,10 @@ function App() {
 
   const addSong = (song: Song) => {
     setTimeline((entries) => addSongToTimeline(entries, song))
+  }
+
+  const addMedia = (asset: MediaAsset) => {
+    setTimeline((entries) => addMediaToTimeline(entries, asset))
   }
 
   return (
@@ -69,6 +75,9 @@ function App() {
       )}
       {openLibrary === 'songs' && (
         <SongsDialog songs={songs} timeline={timeline} onAdd={addSong} onClose={closeDialog} />
+      )}
+      {openLibrary === 'media' && (
+        <MediaDialog media={media} timeline={timeline} onAdd={addMedia} onClose={closeDialog} />
       )}
     </div>
   )
