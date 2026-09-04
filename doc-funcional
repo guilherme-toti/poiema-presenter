@@ -1,0 +1,309 @@
+# Poiema Presenter — Documentação Funcional
+
+> **O que é este documento:** a descrição do produto em linguagem comum — o que ele faz, para quem, e como se comporta. Não tem código nem termos de programação. Serve para validar, antes de construir, se é isso mesmo que a igreja precisa.
+>
+> **Documento irmão:** _Tech Documentation_ (como o app é construído por dentro).
+> **Versão:** 1.0 · **Data:** setembro de 2026
+
+---
+
+## 1. O Problema
+
+Todo domingo, alguém precisa colocar letra de música, aviso e vídeo no telão — e quase sempre esse alguém é um voluntário que aprendeu o programa "na marra", às vezes chegou dez minutos antes de começar, e ocasionalmente é uma pessoa diferente da que operou no domingo anterior.
+
+Os programas disponíveis hoje foram feitos para operadores profissionais de mídia. Eles são poderosos, mas pagam esse poder com complexidade: dezenas de painéis, bibliotecas de mídia, camadas, macros, temas, grupos. Na prática, três coisas acontecem:
+
+**O treinamento não escala.** Ensinar um voluntário novo leva horas, e ele esquece metade até o próximo domingo em que escala.
+
+**O erro é caro e visível.** Um clique na aba errada põe a música errada na frente de trezentas pessoas. E a interface não distingue com clareza o que _está_ no telão do que está apenas selecionado.
+
+**A preparação é lenta.** Montar o culto exige "pescar" arquivos espalhados numa biblioteca, arrastar para uma playlist, configurar cada item. Quem monta geralmente é o líder de louvor, no sábado à noite, sem tempo.
+
+E há o problema de fundo: em máquina modesta — que é o que a maioria das igrejas tem — esses programas travam, engasgam no vídeo, demoram a abrir.
+
+### A aposta do Poiema Presenter
+
+**Um culto é uma sequência, não uma biblioteca.**
+
+Abertura → louvor → aviso → pregação → encerramento. Sempre nessa forma linear. Se o programa for construído em cima dessa sequência — o **Roteiro** — em vez de em cima de um acervo de arquivos, o voluntário não precisa procurar nada durante o culto. Ele desce a lista.
+
+Três consequências de projeto vêm daí:
+
+1. Se está no Roteiro, está pronto. Nada de configurar no meio do culto.
+2. O que está no telão é sempre inconfundível na tela do operador.
+3. O produto faz menos coisas, mas as que faz nunca falham.
+
+---
+
+## 2. Para Quem
+
+### Ana — a voluntária de mídia _(usuária principal)_
+
+Tem 22 anos, escala uma vez por mês, não é da área de tecnologia. Chega quinze minutos antes. Nunca abriu o programa em casa. Quer chegar, abrir o roteiro que já está pronto, e acompanhar o culto sem errar.
+
+> _"Eu só preciso saber qual é a próxima e ter certeza do que tá aparecendo lá na frente."_
+
+**O que ela precisa:** roteiro pronto quando senta; saber sempre o que está no telão; conseguir apagar tudo em um toque quando algo dá errado; operar sem tirar a mão do teclado.
+
+**O que a machuca hoje:** o medo de clicar errado; a letra que atrasa porque ela estava procurando a música; o vídeo que trava; não saber desfazer.
+
+### Bruno — o líder de louvor _(prepara o culto)_
+
+Monta a lista de músicas na quinta, ajusta no sábado, às vezes muda no domingo de manhã. Não quer aprender programa de mídia — quer colar a letra e seguir a vida.
+
+**O que ele precisa:** criar o roteiro em poucos minutos; colar letra de qualquer lugar e ela sair certa; reordenar arrastando; duplicar o culto passado como ponto de partida.
+
+**O que o machuca hoje:** formatar letra manualmente slide por slide; achar o arquivo de vídeo certo; refazer trabalho que já fez mês passado.
+
+### Pastor / liderança _(usuário indireto)_
+
+Não opera nada. Quer o culto fluindo sem distração e sem constrangimento no telão.
+
+---
+
+## 3. Como Funciona — Visão Geral
+
+O programa abre em **uma janela de controle dividida em três partes**, e comanda **uma segunda tela** (o projetor ou TV), onde só aparece o conteúdo — sem menu, sem cursor, sem barra de janela.
+
+```
+   TELA DO OPERADOR (notebook)                       TELÃO (segunda tela)
+ ┌────────────┬──────────────────┬─────────────┐   ┌────────────────────────┐
+ │  ROTEIRO   │    SLIDES        │  AO VIVO    │   │                        │
+ │            │                  │             │   │                        │
+ │ ▸ Abertura │ ┌──────────────┐ │ ┌─────────┐ │   │   Grande é o Senhor    │
+ │ ▸ Louvor 1 │ │ Grande é o…  │ │ │ (o que  │ │   │   e mui digno de       │
+ │ ▪ Louvor 2 │ ├──────────────┤ │ │  está   │ │   │        louvor          │
+ │ ▸ Aviso    │ │ Na cidade…   │◀│ │ na tela)│ │   │                        │
+ │ ▸ Pregação │ ├──────────────┤ │ └─────────┘ │   │                        │
+ │            │ │ Grande é o…  │ │  [ Preta ]  │   │                        │
+ │            │ └──────────────┘ │  [ Limpar ] │   └────────────────────────┘
+ └────────────┴──────────────────┴─────────────┘
+   1. o culto      2. as partes      3. conferência
+      inteiro      do item aberto
+```
+
+**Esquerda — o Roteiro.** A sequência do culto, de cima para baixo. Cada linha é um momento: uma música, um vídeo, uma imagem, um aviso. É por aqui que a Ana navega.
+
+**Centro — os Slides.** Ao clicar num item do Roteiro, o centro mostra as partes dele. Numa música, cada cartão traz **duas linhas da letra** — exatamente o que vai aparecer no telão. Clicar num cartão põe ele no ar.
+
+**Direita — Ao Vivo.** Uma miniatura fiel do telão, do jeitinho que a congregação está vendo. Embaixo, os botões de emergência: **Tela Preta** e **Limpar Texto**.
+
+E uma aba **Mídia** ao lado de **Roteiro**, para quando o operador precisa de algo que não estava planejado.
+
+---
+
+## 4. As Duas Jornadas
+
+### 4.1 Bruno monta o culto de domingo _(quinta-feira, 12 minutos)_
+
+1. Abre o app e cria o evento **"Culto — 07/09"**. _Ou duplica o culto anterior, que já vem com abertura e encerramento no lugar._
+2. Arrasta o vídeo de contagem regressiva para o topo do Roteiro.
+3. Adiciona a primeira música. Como ainda não está no acervo, clica em **Nova música**, cola a letra copiada do Letras.mus.br e salva. **O programa quebra a letra sozinho em cartões de duas linhas**, respeitando versos e refrões.
+4. Repete para as outras três músicas — todas novas, todas coladas. _(Nos próximos meses isso fica mais rápido: música já usada aparece na busca e entra com um clique.)_
+5. Adiciona o aviso do retiro (imagem) e a arte da pregação.
+6. Arrasta uma música para cima para trocar a ordem. Fecha o app.
+
+**Pronto.** Não há o que "salvar" — o programa salva sozinho, o tempo todo.
+
+### 4.2 Ana opera o culto _(domingo, das 9h45 às 11h20)_
+
+1. Abre o app. O culto do dia já está aberto, porque é o evento com a data de hoje.
+2. Uma faixa discreta no topo avisa: _"Segunda tela detectada — Epson 1080p."_ Ana clica em **Iniciar projeção** e o telão acende com a contagem regressiva. _O programa nunca liga a projeção sozinho — a igreja pode estar com a tela mostrando outra coisa._
+3. Começa o culto. Ela clica na primeira música no Roteiro; o centro se enche de cartões de duas linhas.
+4. Clica no primeiro cartão. A letra aparece no telão com um fade suave. **O cartão ganha uma barra vermelha na lateral** — é o que está no ar, e não há como confundir.
+5. Daí em diante ela usa só a **seta para baixo**. Cada toque avança um cartão. A barra vermelha desce junto.
+6. Acaba a música: **seta para a direita** vai para o próximo item do Roteiro.
+7. O pastor faz uma oração fora do previsto. Ana aperta **B**. Telão preto, instantâneo. Aperta **B** de novo e tudo volta como estava.
+8. No fim, fecha o app. Nada a salvar, nada a exportar.
+
+**Sem procurar arquivo. Sem abrir pasta. Sem configurar nada durante o culto.**
+
+---
+
+## 5. Requisitos Funcionais
+
+Numerados para dar para conferir um a um quando o app ficar pronto. **Prioridade:** 🔴 essencial (sem isso não há produto) · 🟡 importante · 🟢 desejável.
+
+### 5.1 Eventos (o culto)
+
+| #     | Requisito                                                                                                                                          | Prio |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| RF-01 | Criar um evento com nome e data                                                                                                                    | 🔴   |
+| RF-02 | Abrir automaticamente o evento cuja data é a de hoje. Havendo mais de um, abrir o criado mais recentemente e mostrar os outros num seletor no topo | 🟡   |
+| RF-03 | Listar eventos anteriores, do mais recente para o mais antigo                                                                                      | 🔴   |
+| RF-04 | Duplicar um evento existente, trazendo todo o roteiro                                                                                              | 🟡   |
+| RF-05 | Renomear e excluir evento (excluir pede confirmação)                                                                                               | 🔴   |
+| RF-06 | Salvar toda alteração automaticamente, sem botão "salvar"                                                                                          | 🔴   |
+
+### 5.2 Roteiro
+
+| #     | Requisito                                                                    | Prio |
+| ----- | ---------------------------------------------------------------------------- | ---- |
+| RF-07 | Adicionar ao roteiro: música, imagem, vídeo, aviso de texto                  | 🔴   |
+| RF-08 | Reordenar os itens arrastando                                                | 🔴   |
+| RF-09 | Remover item do roteiro (sem apagar a música ou o arquivo do acervo)         | 🔴   |
+| RF-10 | Renomear o item só naquele culto — ex.: "Louvor 2" em vez do título original | 🟡   |
+| RF-11 | Mostrar em cada linha o tipo do item e quantos slides ele tem                | 🟡   |
+| RF-12 | Marcar visualmente qual item está sendo exibido no telão                     | 🔴   |
+| RF-13 | Inserir separadores de bloco — ex.: "— Louvor —", "— Palavra —"              | 🟢   |
+
+### 5.3 Músicas e letras
+
+| #     | Requisito                                                                                                                           | Prio |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| RF-14 | Cadastrar música com título, artista (opcional) e letra colada                                                                      | 🔴   |
+| RF-15 | Dividir a letra automaticamente em cartões de **exatamente duas linhas**                                                            | 🔴   |
+| RF-16 | Nunca juntar num mesmo cartão linhas de partes diferentes (fim do verso com começo do refrão)                                       | 🔴   |
+| RF-17 | Reconhecer marcações de seção como `[Refrão]`, `[Verso 1]`, `[Ponte]` — e, quando não houver, usar as linhas em branco como divisão | 🔴   |
+| RF-18 | Permitir cartão de uma linha só, quando a parte tiver número ímpar de linhas                                                        | 🔴   |
+| RF-19 | Mostrar prévia da divisão **antes** de salvar, para o Bruno corrigir a letra se sair estranha                                       | 🟡   |
+| RF-20 | Editar a letra depois; ao salvar, os cartões são refeitos                                                                           | 🔴   |
+| RF-21 | Buscar música por título ou trecho da letra                                                                                         | 🟡   |
+| RF-22 | Exibir a etiqueta da parte (Refrão, Verso 2) discretamente no cartão, sem projetar no telão                                         | 🟡   |
+
+### 5.4 Mídia
+
+| #     | Requisito                                                                                                                                                                                                                                      | Prio |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| RF-23 | Importar imagens (JPG, PNG, WEBP) e vídeos **MP4/H.264 ou MOV/H.264**. Arquivo em codec não suportado (ProRes, HEVC, AV1) é aceito na importação mas marcado com aviso _"pode não reproduzir"_ já no acervo — nunca descoberto durante o culto | 🔴   |
+| RF-24 | Gerar miniatura de cada arquivo para o acervo                                                                                                                                                                                                  | 🔴   |
+| RF-25 | Usar uma mídia como **fundo** (com letra por cima) ou como **exibição direta** (sozinha na tela)                                                                                                                                               | 🔴   |
+| RF-26 | Repetir vídeo em loop, sem corte visível ao reiniciar                                                                                                                                                                                          | 🔴   |
+| RF-27 | Manter o vídeo de fundo rodando durante toda a música, sem reiniciar a cada slide                                                                                                                                                              | 🔴   |
+| RF-28 | Avisar de forma clara quando um arquivo foi movido ou apagado, e oferecer localizá-lo de novo                                                                                                                                                  | 🟡   |
+| RF-29 | Aba Mídia com busca, para achar algo fora do planejado durante o culto                                                                                                                                                                         | 🟡   |
+
+### 5.5 Projeção
+
+| #     | Requisito                                                                                                                                                | Prio |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| RF-30 | Detectar as telas conectadas e listá-las com nome e resolução                                                                                            | 🔴   |
+| RF-31 | Projetar na segunda tela por padrão, com opção de escolher outra                                                                                         | 🔴   |
+| RF-32 | Ocupar a tela inteira, sem barra de janela, sem cursor, sem notificação do sistema por cima                                                              | 🔴   |
+| RF-33 | Transição suave (fade) entre slides e entre fundos, sem piscar                                                                                           | 🔴   |
+| RF-34 | **Tela Preta** — corte seco, sem fade, no primeiro quadro seguinte; acionar de novo restaura o que estava (aí sim com fade)                              | 🔴   |
+| RF-35 | **Limpar Texto** — tira a letra e mantém o fundo                                                                                                         | 🔴   |
+| RF-36 | Ajustar o tamanho da letra automaticamente quando o texto for longo, para nunca cortar                                                                   | 🔴   |
+| RF-37 | Recuperar sozinho quando o cabo cai e volta, retomando o que estava no ar                                                                                | 🟡   |
+| RF-38 | **Modo ensaio:** sem segunda tela, o programa não abre janela de projeção nenhuma — tudo acontece só na miniatura Ao Vivo, sem cobrir a tela do operador | 🟡   |
+
+### 5.6 Operação
+
+| #     | Requisito                                                                                         | Prio |
+| ----- | ------------------------------------------------------------------------------------------------- | ---- |
+| RF-39 | Miniatura fiel do telão, sempre visível                                                           | 🔴   |
+| RF-40 | Distinguir de forma inconfundível três estados: **no ar** (vermelho), **selecionado**, **normal** | 🔴   |
+| RF-41 | Operar o culto inteiro pelo teclado (ver seção 6)                                                 | 🔴   |
+| RF-42 | Avançar slide sem clique acidental disparar duas vezes                                            | 🔴   |
+| RF-43 | Mensagem clara e não-modal quando algo dá errado — nunca uma caixa que trava a operação           | 🔴   |
+| RF-44 | Marcar o próximo slide como "preparado" antes de colocá-lo no ar                                  | 🟢   |
+
+### 5.7 Aparência
+
+| #     | Requisito                                                                                             | Prio |
+| ----- | ----------------------------------------------------------------------------------------------------- | ---- |
+| RF-45 | Fonte, tamanho, cor, alinhamento e sombra do texto configuráveis                                      | 🟡   |
+| RF-46 | Véu escuro sobre o fundo, com intensidade ajustável, para a letra ficar legível sobre qualquer imagem | 🔴   |
+| RF-47 | Margem de segurança, para o texto não encostar na borda do telão                                      | 🟡   |
+| RF-48 | Definir uma aparência padrão para o culto e sobrescrever em itens específicos                         | 🟢   |
+
+---
+
+## 6. Teclado
+
+Operar de mouse é lento e impreciso. O culto inteiro deve caber nestas teclas:
+
+| Tecla               | O que faz                                                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **↓** ou **Espaço** | Próximo slide                                                                                                        |
+| **↑**               | Slide anterior                                                                                                       |
+| **→**               | Próximo item do roteiro                                                                                              |
+| **←**               | Item anterior                                                                                                        |
+| **B**               | Tela preta (liga/desliga)                                                                                            |
+| **C**               | Limpar texto                                                                                                         |
+| **1–9**             | Ir direto ao slide de número N do item aberto (itens com mais de 9 slides: acessíveis só pelas setas ou pelo clique) |
+| **Esc**             | Cancelar seleção / fechar janela aberta                                                                              |
+
+As teclas de avanço e as teclas 1–9 **projetam** — são ação explícita do operador, como o clique num cartão. Já **←/→**, que trocam de item do Roteiro, apenas navegam: não mudam o telão até que um slide seja acionado.
+
+---
+
+## 7. Regras de Negócio
+
+Decisões de comportamento que valem em qualquer tela do programa.
+
+**RN-01 — Nada entra no ar sem ação explícita.** Ação explícita é uma destas três: clicar num cartão, apertar uma tecla de avanço (↓ ↑ Espaço), ou apertar 1–9. **Selecionar um item no Roteiro não é ação explícita** — abre os cartões dele no centro e não toca no telão. O operador pode navegar o culto inteiro pelo Roteiro com o telão congelado no slide anterior.
+
+**RN-02 — A Tela Preta não destrói estado.** Ela cobre. Ao desligar, tudo volta exatamente como estava — mesma letra, mesmo fundo, mesmo ponto do vídeo. E ela é **corte seco na ida**: quando o operador aperta B, é porque quer aquilo fora da tela agora, não em 300 ms.
+
+**RN-03 — O fundo sobrevive à troca de slide.** Trocar de letra não reinicia o vídeo nem recarrega a imagem. O fundo só muda quando um slide **de outro item** é acionado — isto é, junto com uma ação explícita, nunca por navegação. E um item de música sem fundo próprio **herda** o fundo que já estava no ar, que é o caso comum: um loop atrás de todo o bloco de louvor.
+
+**RN-04 — Excluir do roteiro ≠ excluir do acervo.** Tirar uma música do culto de domingo não a apaga. Apagar do acervo, sim, é definitivo — e a confirmação diz em quantos cultos aquele item é usado hoje (_"Esta música está em 4 cultos. Excluir vai removê-la de todos."_), porque o número é o que faz a pessoa parar e pensar.
+
+**RN-05 — A letra original é a fonte da verdade.** Os cartões são gerados a partir dela. Editar a letra refaz os cartões; não existe editar cartão isoladamente (isso criaria duas versões da mesma música).
+
+**RN-06 — Salvamento contínuo.** Não há botão salvar nem "deseja salvar as alterações?". Fechar o app a qualquer momento é seguro.
+
+**RN-07 — Falha nunca é modal; ação destrutiva sempre é.** São coisas diferentes. **Erro** — arquivo sumido, tela desconectada, importação falhada — nunca interrompe: vira faixa discreta no topo. O programa jamais exige um "OK" por algo que ele mesmo detectou. **Ação destrutiva iniciada pelo operador** — excluir evento, excluir música do acervo — pede confirmação, porque não há desfazer. E confirmação de exclusão fica **bloqueada enquanto a projeção está ativa**: ninguém apaga um culto às 10h30 de domingo.
+
+**RN-08 — O que o operador vê é o que a congregação vê.** A miniatura Ao Vivo não é uma aproximação: é a mesma renderização, em escala menor.
+
+**RN-09 — O acervo referencia arquivos, não os copia.** Vídeos de culto ocupam gigabytes; duplicá-los encheria o disco da igreja. Consequência aceita: mover ou renomear o arquivo quebra o vínculo — daí o RF-28.
+
+**RN-10 — Um evento por data, mas sem trancar.** O app abre o culto de hoje automaticamente, mas nada impede vários eventos no mesmo dia (culto da manhã e da noite). Havendo empate, abre o criado por último e deixa os outros a um clique — ver RF-02.
+
+**RN-11 — A miniatura não paga o preço do telão.** O Preview mostra a mesma renderização do telão (RN-08), mas quando o fundo é vídeo ele exibe um quadro estático em vez de decodificar uma segunda cópia do arquivo. Numa máquina modesta, decodificar 1080p duas vezes é justamente o que causa engasgo — e o operador não precisa ver o vídeo se mexendo, precisa ver **qual** vídeo está no ar e onde a letra caiu sobre ele.
+
+---
+
+## 8. Critérios de Aceite
+
+O produto está pronto quando estas cinco frases forem verdade. Elas são o teste real — não a lista de requisitos.
+
+**CA-01 — O teste do voluntário novo.**
+Uma pessoa que nunca viu o programa, sem nenhum treinamento e sem fazer perguntas, opera um culto de ensaio completo (5 músicas, 2 avisos, 1 pregação) sem errar o que vai ao telão.
+
+**CA-02 — O teste da montagem.**
+O líder de louvor monta um culto do zero — 4 músicas novas coladas da internet, 3 mídias — em **menos de 15 minutos**, na primeira vez que usa o programa. (É o mesmo cenário da jornada 4.1.)
+
+**CA-03 — O teste da resposta.**
+Do clique no cartão até a letra aparecer no telão: **menos de 50 milissegundos**, sem contar o fade — medido no percentil 95, não na média. Com vídeo de fundo 1080p H.264, a taxa de quadros do telão não cai abaixo de 55 fps durante as transições.
+
+**CA-04 — O teste da máquina modesta.**
+Roda fluido em notebook comum de igreja (i5 de 8ª geração, 8 GB de RAM, sem placa de vídeo dedicada), com vídeo de fundo 1080p H.264 em loop, por duas horas seguidas, sem degradar — memória estável e nenhum acúmulo entre trocas de item.
+
+**CA-05 — O teste do imprevisto.**
+Cabo do projetor desconectado e reconectado no meio do culto: o telão volta sozinho com o mesmo conteúdo, sem precisar reabrir o programa.
+
+---
+
+## 9. O Que Fica de Fora do MVP
+
+Registrado aqui de propósito. A tentação de "já que estou mexendo, deixa eu só adicionar…" é o que transforma um MVP de três semanas num projeto de seis meses.
+
+**Fora — decidido:**
+
+| Recurso                                                           | Por quê                                                                                                                                                  |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bíblia integrada**                                              | É um produto dentro do produto: versões, busca por referência, formatação de versículo. Entra na v1.1, e provavelmente é a primeira coisa depois do MVP. |
+| **Editor visual de temas**                                        | O MVP tem aparência configurável, mas por formulário simples, não por editor arrastável.                                                                 |
+| **Tela de retorno para os músicos** (letra + cronômetro no palco) | Exige uma terceira saída de vídeo e outro modelo de tela. Valioso, mas não bloqueia o domingo.                                                           |
+| **Transmissão / NDI**                                             | Depende de como a igreja faz o streaming hoje; decidir depois de entender esse fluxo.                                                                    |
+| **Importar do ProPresenter**                                      | Só vale se houver acervo grande a migrar. Verificar antes de investir.                                                                                   |
+| **Sincronizar entre computadores**                                | Um computador de mídia, um arquivo. Nuvem é complexidade sem demanda comprovada.                                                                         |
+| **Desfazer global**                                               | Todas as ações destrutivas pedem confirmação; isso cobre o risco no MVP.                                                                                 |
+| **Cronômetro de culto**                                           | Útil, mas é acessório.                                                                                                                                   |
+
+**Fora — por princípio:** camadas múltiplas, macros, grupos de slides, playlists aninhadas, plugins. Não é um "ainda não" — é o que o produto escolheu não ser. Cada um deles é uma decisão que o voluntário teria que tomar durante o culto.
+
+---
+
+## 10. Como Vamos Saber que Deu Certo
+
+Três perguntas, seis meses depois de estar rodando na igreja:
+
+1. **Quanto tempo leva para treinar um voluntário novo?** Meta: menos de 10 minutos, mostrando na prática. Hoje, com ProPresenter, leva algumas horas.
+2. **Quantos erros visíveis por mês?** Erro visível = conteúdo errado no telão por mais de 3 segundos, ou letra atrasada em relação à música. Meta: tender a zero.
+3. **O líder de louvor monta o culto sozinho?** Se ele ainda precisa pedir ajuda para preparar, a promessa central não foi cumprida.
+
+Se as três respostas forem boas, o produto resolveu o problema — independente de quantos recursos ele tenha.
