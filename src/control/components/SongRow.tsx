@@ -1,4 +1,5 @@
 import { songSlideCount, type Song } from '../mockSongs'
+import { setDragPayload } from '../lib/dnd'
 
 interface SongRowProps {
   song: Song
@@ -11,9 +12,11 @@ export function SongRow({ song, selected, inService, onSelect }: SongRowProps) {
   return (
     <button
       type="button"
+      draggable
+      onDragStart={(e) => setDragPayload(e, { source: 'song', id: song.id })}
       onClick={onSelect}
       aria-current={selected || undefined}
-      className={`flex w-full items-center gap-3 rounded-lg border px-4 py-2.5 text-left ${
+      className={`flex w-full cursor-grab items-center gap-3 rounded-lg border px-4 py-2.5 text-left active:cursor-grabbing ${
         selected ? 'border-indigo-400/60 bg-white/5' : 'border-transparent hover:bg-white/5'
       }`}
     >

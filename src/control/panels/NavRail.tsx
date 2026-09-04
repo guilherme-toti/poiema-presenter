@@ -70,8 +70,8 @@ const bottomItems: NavItem[] = [
 ]
 
 interface NavRailProps {
-  /** Library whose dialog is currently open, if any. */
-  active: Library | null
+  /** Libraries whose windows are currently open. */
+  active: readonly Library[]
   onOpen: (library: Library) => void
 }
 
@@ -80,12 +80,22 @@ export function NavRail({ active, onOpen }: NavRailProps) {
     <div className="flex flex-col items-center justify-between border-r border-white/8 bg-neutral-900 py-3">
       <div className="flex flex-col gap-1">
         {topItems.map((item) => (
-          <NavIcon key={item.library} {...item} active={active === item.library} onOpen={onOpen} />
+          <NavIcon
+            key={item.library}
+            {...item}
+            active={active.includes(item.library)}
+            onOpen={onOpen}
+          />
         ))}
       </div>
       <div className="flex flex-col gap-1">
         {bottomItems.map((item) => (
-          <NavIcon key={item.library} {...item} active={active === item.library} onOpen={onOpen} />
+          <NavIcon
+            key={item.library}
+            {...item}
+            active={active.includes(item.library)}
+            onOpen={onOpen}
+          />
         ))}
       </div>
     </div>

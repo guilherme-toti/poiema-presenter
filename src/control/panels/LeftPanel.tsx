@@ -1,8 +1,9 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, type DragEvent } from 'react'
 import { ChevronDown, Plus } from 'lucide-react'
 import { TimelineRow } from '../components/TimelineRow'
 import { TimelineHeader } from '../components/TimelineHeader'
 import { ServicesMenu } from '../components/ServicesMenu'
+import { getDragPayload, hasDragPayload, type DragPayload } from '../lib/dnd'
 import { recentServices, timelineItemsOf, type Service, type TimelineEntry } from '../mockData'
 
 interface LeftPanelProps {
@@ -12,6 +13,8 @@ interface LeftPanelProps {
   timeline: TimelineEntry[]
   selectedItemId: string | null
   onSelectItem: (id: string) => void
+  /** Something was dropped on the timeline, to be inserted before entry `index`. */
+  onDrop: (payload: DragPayload, index: number) => void
 }
 
 /**
@@ -37,6 +40,24 @@ function timelineLabels(entries: TimelineEntry[]): Map<string, string> {
   return labels
 }
 
+/** Index of the entry the pointer is above the middle of, or the list length. */
+function dropIndexAt(container: HTMLElement, clientY: number): number {
+  const rows = container.querySelectorAll<HTMLElement>('[data-entry-index]')
+  for (const row of rows) {
+    const rect = row.getBoundingClientRect()
+    if (clientY < rect.top + rect.height / 2) return Number(row.dataset.entryIndex)
+  }
+  return rows.length
+}
+
+function DropLine() {
+  return (
+    <div aria-hidden className="relative h-0">
+      <div className="absolute inset-x-2 -top-px h-0.5 rounded bg-indigo-400" />
+    </div>
+  )
+}
+
 export function LeftPanel({
   currentService,
   onSelectService,
@@ -44,12 +65,33 @@ export function LeftPanel({
   timeline,
   selectedItemId,
   onSelectItem,
+  onDrop,
 }: LeftPanelProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [dropIndex, setDropIndex] = useState<number | null>(null)
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
   const labels = timelineLabels(timeline)
   const itemCount = timelineItemsOf(timeline).length
+
+  const onDragOver = (e: DragEvent<HTMLDivElement>) => {
+    if (!hasDragPayload(e)) return
+    e.preventDefault()
+    setDropIndex(dropIndexAt(e.currentTarget, e.clientY))
+  }
+
+  const onDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDropIndex(null)
+  }
+
+  const onDropHere = (e: DragEvent<HTMLDivElement>) => {
+    const payload = getDragPayload(e)
+    const index = dropIndex ?? dropIndexAt(e.currentTarget, e.clientY)
+    setDropIndex(null)
+    if (!payload) return
+    e.preventDefault()
+    onDrop(payload, index)
+  }
 
   return (
     <div className="flex flex-col border-r border-white/8 bg-white/5">
@@ -93,28 +135,32 @@ export function LeftPanel({
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto py-2">
-        {timeline.map((entry, index) => {
-          if (entry.kind === 'header') {
-            return (
+      <div
+        className="flex-1 overflow-y-auto py-2"
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDropHere}
+      >
+        {timeline.map((entry, index) => (
+          <div key={entry.id} data-entry-index={index}>
+            {dropIndex === index && <DropLine />}
+            {entry.kind === 'header' ? (
               <TimelineHeader
-                key={entry.id}
                 header={entry}
                 count={Number(labels.get(entry.id) ?? 0)}
                 first={index === 0}
               />
-            )
-          }
-          return (
-            <TimelineRow
-              key={entry.id}
-              item={entry}
-              number={labels.get(entry.id) ?? ''}
-              selected={entry.id === selectedItemId}
-              onSelect={() => onSelectItem(entry.id)}
-            />
-          )
-        })}
+            ) : (
+              <TimelineRow
+                item={entry}
+                number={labels.get(entry.id) ?? ''}
+                selected={entry.id === selectedItemId}
+                onSelect={() => onSelectItem(entry.id)}
+              />
+            )}
+          </div>
+        ))}
+        {dropIndex === timeline.length && <DropLine />}
       </div>
 
       <div className="border-t border-white/8 px-3 py-2">

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AlertTriangle, FileQuestion } from 'lucide-react'
 import { mediaBadge, type MediaAsset } from '../mockMedia'
+import { setDragPayload } from '../lib/dnd'
 
 export const STRIPES =
   'bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.06)_0_8px,transparent_8px_16px)]'
@@ -27,11 +28,13 @@ export function MediaTile({ asset, selected, inService, onSelect }: MediaTilePro
   return (
     <button
       type="button"
+      draggable={!missing}
+      onDragStart={(e) => setDragPayload(e, { source: 'media', id: asset.id })}
       onClick={onSelect}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       aria-current={selected || undefined}
-      className="group flex flex-col gap-1.5 text-left"
+      className={`group flex flex-col gap-1.5 text-left ${missing ? '' : 'cursor-grab active:cursor-grabbing'}`}
     >
       <span
         className={`relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-md border transition-[box-shadow,border-color] ${frame} ${

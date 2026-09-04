@@ -3,13 +3,13 @@ import { Check, Copy, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import type { TimelineEntry } from '../mockData'
 import { recentSongs, searchSongs, songSlideCount, type Song } from '../mockSongs'
 import { timelineHasSong } from '../lib/timeline'
-import { DialogShell } from './DialogShell'
+import { DialogShell, type WindowProps } from './DialogShell'
 import { DetailPane } from './DetailPane'
 import { SongRow } from './SongRow'
 
 const ADDED_FEEDBACK_MS = 1200
 
-interface SongsDialogProps {
+interface SongsDialogProps extends WindowProps {
   songs: Song[]
   timeline: TimelineEntry[]
   onAdd: (song: Song) => void
@@ -20,7 +20,7 @@ function formatLastUsed(iso: string): string {
   return new Date(`${iso}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function SongsDialog({ songs, timeline, onAdd, onClose }: SongsDialogProps) {
+export function SongsDialog({ songs, timeline, onAdd, onClose, ...windowProps }: SongsDialogProps) {
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [justAddedId, setJustAddedId] = useState<string | null>(null)
@@ -48,11 +48,14 @@ export function SongsDialog({ songs, timeline, onAdd, onClose }: SongsDialogProp
     <DialogShell
       title="Songs"
       titleId="songs-dialog-title"
-      className="h-[600px] w-auto max-w-full"
+      initialHeight={600}
+      minWidth={720}
+      minHeight={420}
       onClose={onClose}
+      {...windowProps}
     >
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex w-[640px] shrink-0 flex-col overflow-hidden p-3">
+        <div className="flex w-[640px] min-w-[320px] flex-1 flex-col overflow-hidden p-3">
           <div className="mb-3 flex items-center gap-2">
             <label className="flex flex-1 items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm text-neutral-300 focus-within:border-indigo-400/60">
               <Search className="h-4 w-4 shrink-0 text-neutral-500" />

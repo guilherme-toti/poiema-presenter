@@ -1,5 +1,6 @@
 import { AlignLeft, Film, Image, Music, MonitorPlay } from 'lucide-react'
 import type { TimelineItem, TimelineItemType } from '../mockData'
+import { setDragPayload } from '../lib/dnd'
 
 const ICONS: Record<TimelineItemType, typeof Image> = {
   countdown: MonitorPlay,
@@ -23,9 +24,11 @@ export function TimelineRow({ item, number, selected, onSelect }: TimelineRowPro
   return (
     <button
       type="button"
+      draggable
+      onDragStart={(e) => setDragPayload(e, { source: 'timeline', id: item.id })}
       onClick={onSelect}
       aria-current={selected || undefined}
-      className={`flex w-full items-center gap-2.5 border-l-2 px-3 py-2 text-left ${
+      className={`flex w-full cursor-grab items-center gap-2.5 border-l-2 px-3 py-2 text-left active:cursor-grabbing ${
         selected ? 'border-red-500 bg-red-500/10' : 'border-transparent hover:bg-white/5'
       }`}
     >

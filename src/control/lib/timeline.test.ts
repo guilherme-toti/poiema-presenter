@@ -5,6 +5,8 @@ import type { MediaAsset } from '../mockMedia'
 import {
   addMediaToTimeline,
   addSongToTimeline,
+  insertAt,
+  moveEntry,
   timelineHasMedia,
   timelineHasSong,
 } from './timeline'
@@ -119,6 +121,45 @@ describe('timelineHasMedia', () => {
     const entries = addMediaToTimeline([header('h1', 'Media')], video)
     expect(timelineHasMedia(entries, 'loop-blue')).toBe(true)
     expect(timelineHasMedia(entries, 'other')).toBe(false)
+  })
+})
+
+describe('moveEntry', () => {
+  const entries = [
+    header('h1', 'Media'),
+    item('a', 'A'),
+    item('b', 'B'),
+    header('h2', 'Songs'),
+    item('c', 'C'),
+  ]
+
+  it('moves an entry down, dropping before the entry that was at toIndex', () => {
+    expect(titles(moveEntry(entries, 'a', 4))).toEqual(['Media', 'B', 'Songs', 'A', 'C'])
+  })
+
+  it('moves an entry up', () => {
+    expect(titles(moveEntry(entries, 'c', 1))).toEqual(['Media', 'C', 'A', 'B', 'Songs'])
+  })
+
+  it('moves to the very end', () => {
+    expect(titles(moveEntry(entries, 'a', 5))).toEqual(['Media', 'B', 'Songs', 'C', 'A'])
+  })
+
+  it('is a no-op when dropped onto its own position', () => {
+    expect(titles(moveEntry(entries, 'b', 2))).toEqual(titles(entries))
+    expect(titles(moveEntry(entries, 'b', 3))).toEqual(titles(entries))
+  })
+
+  it('ignores unknown ids', () => {
+    expect(moveEntry(entries, 'nope', 0)).toBe(entries)
+  })
+})
+
+describe('insertAt', () => {
+  it('clamps the index to the list bounds', () => {
+    const entries = [item('a', 'A')]
+    expect(titles(insertAt(entries, -3, item('b', 'B')))).toEqual(['B', 'A'])
+    expect(titles(insertAt(entries, 99, item('b', 'B')))).toEqual(['A', 'B'])
   })
 })
 

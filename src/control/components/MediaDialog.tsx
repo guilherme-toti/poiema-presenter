@@ -13,7 +13,7 @@ import {
 import type { TimelineEntry } from '../mockData'
 import { mediaBadge, searchMedia, type MediaAsset, type MediaKind } from '../mockMedia'
 import { timelineHasMedia } from '../lib/timeline'
-import { DialogShell } from './DialogShell'
+import { DialogShell, type WindowProps } from './DialogShell'
 import { DetailPane } from './DetailPane'
 import { MediaTile, STRIPES } from './MediaTile'
 
@@ -24,7 +24,7 @@ const FILTERS: { value: MediaKind | 'all'; label: string }[] = [
   { value: 'image', label: 'Image' },
 ]
 
-interface MediaDialogProps {
+interface MediaDialogProps extends WindowProps {
   media: MediaAsset[]
   timeline: TimelineEntry[]
   onAdd: (asset: MediaAsset) => void
@@ -35,7 +35,7 @@ function formatLastUsed(iso: string): string {
   return new Date(`${iso}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function MediaDialog({ media, timeline, onAdd, onClose }: MediaDialogProps) {
+export function MediaDialog({ media, timeline, onAdd, onClose, ...windowProps }: MediaDialogProps) {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<MediaKind | 'all'>('all')
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -62,11 +62,14 @@ export function MediaDialog({ media, timeline, onAdd, onClose }: MediaDialogProp
     <DialogShell
       title="Media"
       titleId="media-dialog-title"
-      className="h-[600px] w-auto max-w-full"
+      initialHeight={600}
+      minWidth={720}
+      minHeight={420}
       onClose={onClose}
+      {...windowProps}
     >
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex w-[640px] shrink-0 flex-col overflow-hidden p-3">
+        <div className="flex w-[640px] min-w-[320px] flex-1 flex-col overflow-hidden p-3">
           <label className="mb-3 flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm text-neutral-300 focus-within:border-indigo-400/60">
             <Search className="h-4 w-4 shrink-0 text-neutral-500" />
             <input
@@ -101,7 +104,7 @@ export function MediaDialog({ media, timeline, onAdd, onClose }: MediaDialogProp
             })}
           </div>
 
-          <div className="grid flex-1 auto-rows-min grid-cols-3 gap-3 overflow-y-auto px-1 pb-1">
+          <div className="grid flex-1 auto-rows-min grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 overflow-y-auto px-1 pb-1">
             {visible.map((asset) => (
               <MediaTile
                 key={asset.id}

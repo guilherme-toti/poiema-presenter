@@ -1,19 +1,25 @@
 import { useState } from 'react'
 import { ArrowRight, Copy, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import type { Service } from '../mockData'
-import { DialogShell } from './DialogShell'
+import { DialogShell, type WindowProps } from './DialogShell'
 import { ServiceRow } from './ServiceRow'
 
 const PREVIEW_ITEMS = 5
 
-interface ServicesDialogProps {
+interface ServicesDialogProps extends WindowProps {
   services: Service[]
   currentId: string
   onOpen: (service: Service) => void
   onClose: () => void
 }
 
-export function ServicesDialog({ services, currentId, onOpen, onClose }: ServicesDialogProps) {
+export function ServicesDialog({
+  services,
+  currentId,
+  onOpen,
+  onClose,
+  ...windowProps
+}: ServicesDialogProps) {
   const [selectedId, setSelectedId] = useState(currentId)
   const selected = services.find((s) => s.id === selectedId) ?? services[0]
   const hiddenCount = selected.items.length - PREVIEW_ITEMS
@@ -22,8 +28,12 @@ export function ServicesDialog({ services, currentId, onOpen, onClose }: Service
     <DialogShell
       title="Services"
       titleId="services-dialog-title"
-      className="h-[680px] w-full max-w-[1200px]"
+      initialWidth={1200}
+      initialHeight={680}
+      minWidth={800}
+      minHeight={480}
       onClose={onClose}
+      {...windowProps}
     >
       <div className="grid flex-1 grid-cols-[1fr_minmax(360px,440px)] overflow-hidden">
         <div className="flex flex-col overflow-hidden border-r border-white/8 p-3">
